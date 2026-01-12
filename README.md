@@ -1,53 +1,73 @@
-# Human-Fitness-Monitoring-Dashboard
-Real-time fitness tracking system using MATLAB Mobile and ThingSpeak
-
-🏆 Achievement
-🏅 Best MATLAB Usage Award
-Awarded during the workshop series “MATLAB for AI, Data Analytics, and IoT”.
-
-
 # 🧍 Human Fitness Monitoring Dashboard
+**Real-time fitness tracking using MATLAB Mobile & ThingSpeak**
 
-This project demonstrates a real-time human fitness monitoring system using **MATLAB Mobile**, **MATLAB Desktop**, and **ThingSpeak**. It collects motion-related data like acceleration, angular velocity, and magnetometer readings from your smartphone and estimates steps, uploading all metrics live to ThingSpeak for visualization.
+🏆 **Best MATLAB Usage Award**  
+Awarded during *“MATLAB for AI, Data Analytics, and IoT”* workshop series.
+
+---
+
+## 📌 Problem Statement
+With the rise of wearable and mobile health monitoring, there is a need for a **simple, low-cost system** to track basic fitness parameters like motion activity and step count using commonly available devices.
+
+---
+
+## 🎯 Objective
+To design a **real-time human fitness monitoring system** that:
+- Collects motion sensor data from a smartphone
+- Estimates step count using signal processing
+- Visualizes data on a cloud-based IoT dashboard
+
+---
+
+## 🧠 System Workflow
+1. Smartphone sensors collect motion data using MATLAB Mobile  
+2. Data is processed in MATLAB (filtering & step detection)  
+3. Extracted features are uploaded to ThingSpeak  
+4. Live visualization is displayed on a cloud dashboard  
+
+*(Add a block diagram image here if possible)*
 
 ---
 
 ## 📌 Features
-
-- 📱 Collects live sensor data from mobile (accelerometer, gyroscope, magnetometer)
-- 🚶 Detects step activity using simple peak-based logic
-- 🌐 Uploads data to **ThingSpeak IoT Cloud**
-- 📊 Real-time cloud dashboard for visualization
-- ⚙ Built entirely using **MATLAB** scripting
-
----
-
-## 🛠 Tools & Technologies Used
-
-- MATLAB Mobile (sensor data logging)
-- MATLAB (data processing + visualization)
-- ThingSpeak (cloud platform)
-- Smartphone sensors
+- 📱 Live sensor data collection (Accelerometer, Gyroscope, Magnetometer)
+- 🚶 Step detection using peak-based logic
+- 🌐 IoT cloud integration using ThingSpeak
+- 📊 Real-time dashboard visualization
+- ⚙️ Implemented fully in MATLAB (no external hardware)
 
 ---
 
-## ⚙️ How It Works
-
-1. MATLAB Mobile connects your phone's motion sensors to MATLAB.
-2. Acceleration, angular velocity, and magnetic field data are collected.
-3. Basic peak detection estimates the number of steps taken.
-4. All sensor averages and step count are uploaded to **ThingSpeak** every 15 seconds.
+## 🛠 Tools & Technologies
+- **MATLAB Mobile** – Sensor data acquisition  
+- **MATLAB** – Signal processing & analysis  
+- **ThingSpeak** – IoT cloud & dashboard  
+- **Smartphone sensors**
 
 ---
 
-## 📄 Sample Code Snippet
+## 📊 Output Preview
+*(Add screenshots here)*
 
+---
+
+## ⚙️ How to Run
+1. Install **MATLAB Mobile** on your smartphone
+2. Enable motion sensors in the app
+3. Connect MATLAB Mobile to MATLAB Desktop
+4. Run the MATLAB scripts in this repository
+5. Configure your ThingSpeak **Write API Key**
+6. View real-time data on the ThingSpeak dashboard
+
+---
+
+## 📄 Sample Code
 ```matlab
 % Step detection
 threshold = 1.5;
 steps = sum(accel_data(:,1) > threshold);
 
-% ThingSpeak Upload
+% Upload to ThingSpeak
 webwrite('https://api.thingspeak.com/update', ...
     'api_key', writeAPIKey, ...
     'field1', mean_accel, ...

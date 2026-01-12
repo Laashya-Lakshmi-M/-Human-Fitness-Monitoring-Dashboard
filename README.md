@@ -46,8 +46,8 @@ To design a **real-time human fitness monitoring system** that:
 
 ---
 
-## 📊 Output Preview
-*(Add screenshots here)*
+## 📊 Output Preview## 
+![ThingSpeak Dashboard](assets/dashboard.png)
 
 ---
 

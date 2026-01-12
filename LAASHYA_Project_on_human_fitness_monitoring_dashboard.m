@@ -1,44 +1,69 @@
+% =========================================================
 % Human Fitness Monitoring Dashboard
 % Author: Lasshya Lakshmi M.
+%
+% Description:
+% This script collects real-time motion sensor data from a
+% smartphone using MATLAB Mobile, estimates step count, and
+% uploads processed values to ThingSpeak for visualization.
+% =========================================================
 
 clc; clear; close all;
 
-% Define API Key and Channel ID
-writeAPIKey = '12DDX46ACYLY6GR9'; % Replace with your Write API Key
-readAPIKey = 'YRE13GX8H06T8T97';  % Replace with your Read API Key
-channelID = 2879601;  % Replace with your Channel ID
+%% ThingSpeak Configuration
+% Replace these with your own ThingSpeak credentials
+writeAPIKey = '12DDX46ACYLY6GR9';   % Write API Key
+readAPIKey  = 'YRE13GX8H06T8T97';   % Read API Key
+channelID   = 2879601;             % Channel ID
 
-% Setup Mobile Connection
-m = mobiledev;  % Connect to MATLAB Mobile
-m.AccelerationSensorEnabled = true;
-m.AngularVelocitySensorEnabled = true;
-%m.MagneticFieldSensorEnabled = true;
-m.Logging = true;  % Start Logging Data
+%% Mobile Sensor Setup
+% Connect to MATLAB Mobile
+m = mobiledev;
 
-disp("📡 Collecting Data... Move Your Phone!");
+% Enable required sensors
+m.AccelerationSensorEnabled     = true;
+m.AngularVelocitySensorEnabled  = true;
+m.MagneticFieldSensorEnabled    = true;
 
+% Start logging sensor data
+m.Logging = true;
+
+disp("📡 Collecting sensor data... Move your phone!");
+
+%% Continuous Data Acquisition Loop
 while true
-    % Read the latest sensor data
-    accel_data = m.Acceleration;   % Read acceleration
-    gyro_data = m.AngularVelocity; % Read gyroscope
-    mag_data = m.MagneticField;    % Read magnetometer
     
-    % Compute mean values for each sensor
-    mean_accel = mean(accel_data, 'all'); 
-    mean_gyro = mean(gyro_data, 'all');   
-    mean_mag = mean(mag_data, 'all');    
+    % ---------------------------------
+    % Read sensor data from smartphone
+    % ---------------------------------
+    accel_data = m.Acceleration;        % Accelerometer data (m/s^2)
+    gyro_data  = m.AngularVelocity;     % Gyroscope data (rad/s)
+    mag_data   = m.MagneticField;       % Magnetometer data (µT)
     
-    % Detect Steps (Simple Peak Detection)
-    threshold = 1.5;  % Adjust threshold if needed
-    steps = sum(accel_data(:,1) > threshold);  
+    % ---------------------------------
+    % Feature extraction (mean values)
+    % ---------------------------------
+    mean_accel = mean(accel_data, 'all');
+    mean_gyro  = mean(gyro_data, 'all');
+    mean_mag   = mean(mag_data, 'all');
     
-    % Display Data
-    disp(['📊 Acceleration: ', num2str(mean_accel)]);
-    disp(['🌀 Gyroscope: ', num2str(mean_gyro)]);
-    disp(['🧲 Magnetometer: ', num2str(mean_mag)]);
-    disp(['🚶 Steps: ', num2str(steps)]);
+    % ---------------------------------
+    % Step Detection (Simple Threshold)
+    % ---------------------------------
+    threshold = 1.5;  % Threshold for detecting steps
+    steps = sum(accel_data(:,1) > threshold);
     
-    % Send data to ThingSpeak
+    % ---------------------------------
+    % Display computed values
+    % ---------------------------------
+    disp(['📊 Mean Acceleration: ', num2str(mean_accel)]);
+    disp(['🌀 Mean Gyroscope: ', num2str(mean_gyro)]);
+    disp(['🧲 Mean Magnetometer: ', num2str(mean_mag)]);
+    disp(['🚶 Estimated Steps: ', num2str(steps)]);
+    
+    % ---------------------------------
+    % Upload data to ThingSpeak cloud
+    % ---------------------------------
     response = webwrite('https://api.thingspeak.com/update', ...
         'api_key', writeAPIKey, ...
         'field1', mean_accel, ...
@@ -46,21 +71,11 @@ while true
         'field3', mean_mag, ...
         'field4', steps);
     
-    disp(['✅ ThingSpeak Response: ', num2str(response)]);
-
-    % Pause for 15 seconds (ThingSpeak free version limitation)
+    disp(['✅ ThingSpeak Update Status: ', num2str(response)]);
+    
+    % Pause due to ThingSpeak free-tier limitation
     pause(15);
 end
 
-% Stop Logging Data
+%% Stop Logging (Executed when loop is terminated)
 m.Logging = false;
-
-% Update ThingSpeak with latest values
-writeAPIKey = '12DDX46ACYLY6GR9'; % Replace with your actual key
-response = webwrite('https://api.thingspeak.com/update', ...
-    'api_key', writeAPIKey, ...
-    'field1', mean(accel_data(:)), ...
-    'field2', mean(gyro_data(:)));
-
-disp(['ThingSpeak Response: ', num2str(response)]);
-

@@ -25,7 +25,8 @@ To design a **real-time human fitness monitoring system** that:
 3. Extracted features are uploaded to ThingSpeak  
 4. Live visualization is displayed on a cloud dashboard  
 
-*(Add a block diagram image here if possible)*
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/366889a7-9b85-40a6-95d8-b1a19adeea1c" />
+
 
 ---
 
